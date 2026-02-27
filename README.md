@@ -46,9 +46,9 @@ For our experiments, we primarily use the **LLaVA-1.5** training dataset, which 
 Our training approach consists of two stages: **pretraining** and **fine-tuning**. The training process is configured via the following shell script:
 
 
-- `T2V_LAYERS`: Specifies which LLM layers enable text-vision cross-attention. 
-  Cross-attention is applied only to the selected layers, while all other layers remain disabled.
-
+- `T2V_LAYERS`: Controls which transformer layers in the LLM apply text-vision cross-attention. 
+  Only the specified layers perform cross-modal interaction between text and visual tokens; 
+  all remaining layers function as standard self-attention layers.
 
 
 
