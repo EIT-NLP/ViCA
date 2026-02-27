@@ -17,15 +17,17 @@ pip install transformers==4.36.2
 
 
 2. Copy our updated `modeling_llama.py` to transformer library
+TODO
 ```Shell
-cp ../modeling_llama_prune.py {YOUR ENV PATH}/lib/python3.10/site-packages/transformers//models/llama/modeling_llama.py
-# eg. cp ../modeling_llama_prune.py /opt/conda/envs/llava/lib/python3.10/site-packages/transformers//models/llama/modeling_llama.py
 
 ```
 
 
 ## Inference
 1. Download the checkpoints of pruned LLaVA
+
    [LLaVA-1.5-3B] (https://huggingface.co/Mickey25/lwj-3b)
+   
    [LLaVA-1.5-7B] (https://huggingface.co/Mickey25/liuwj-7b)
+   
    [LLaVA-1.5-13B] (https://huggingface.co/Mickey25/liuwj-13b-new)
