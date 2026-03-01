@@ -1,6 +1,6 @@
 # ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention
 
-This repository contains the code for the paper **"ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention"**. 
+This repository contains the code for the paper : [ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention](https://arxiv.org/abs/2602.07574). 
 
 ## Install
 1.  Set up LLavA  https://github.com/haotian-liu/LLaVA 
