@@ -21,7 +21,8 @@ pip install transformers==4.36.2
 TODO
 
 ```Shell
-
+cp ../modeling_llama_prune.py  ./llava/models/modeling_llama_prune.py
+cp ../llava_llama.py  ./llava/model/language_model/llava_llama.py
 ```
 
 
