@@ -6,8 +6,8 @@ This repository contains the code for the paper : [ViCA: Efficient Multimodal LL
 1.  Set up LLavA  https://github.com/haotian-liu/LLaVA 
 ```Shell
 cd LLaVA
-conda create -n llava python=3.10 -y
-conda activate llava
+conda create -n llava-vica python=3.10 -y
+conda activate llava-vica
 pip install --upgrade pip  
 pip install -e .
 pip install -e ".[train]"
