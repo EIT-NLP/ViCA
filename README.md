@@ -16,11 +16,27 @@ pip install transformers==4.36.2
 ```   
 
 
-2. Copy our updated `modeling_llama_prune.py` and `llava_llama.py` to llava library
+2. Copy our updated `modeling_llama.py` and `llava_llama.py` to llava library
+当然，下面是更加简洁的版本：
 
-```Shell
-cp ../modeling_llama_mask.py  ./llava/models/modeling_llama_prune.py
-cp ../llava_llama_mask.py  ./llava/model/language_model/llava_llama.py
+---
+
+### 2. Copy updated files to llava library
+
+* `modeling_llama_mask.py` and `llava_llama_mask.py` implement theoretical pruning:
+  * Mask the corresponding attention weight in the attention block of each transformer layer.
+  * In FFN, extract text tokens from hidden states, feed them through FFN, and concatenate with visual tokens.
+```bash
+cp ../modeling_llama_mask.py ./llava/models/modeling_llama_prune.py
+cp ../llava_llama_mask.py ./llava/model/language_model/llava_llama.py
+```
+
+* `modeling_llama_accel.py` and `llava_llama_accel.py` implement practical acceleration and are compatible with flash-attention:
+  * Using only text tokens as the hidden state, while the visual tokens remain unchanged. In a few layers, the visual tokens are used as KV-pairs in the attention block..
+
+```bash
+cp ../modeling_llama_accel.py ./llava/models/modeling_llama_prune.py
+cp ../llava_llama_accel.py ./llava/model/language_model/llava_llama.py
 ```
 
 
