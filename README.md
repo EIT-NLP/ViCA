@@ -19,8 +19,8 @@ pip install transformers==4.36.2
 2. Copy our updated `modeling_llama_prune.py` and `llava_llama.py` to llava library
 
 ```Shell
-cp ../modeling_llama_prune.py  ./llava/models/modeling_llama_prune.py
-cp ../llava_llama.py  ./llava/model/language_model/llava_llama.py
+cp ../modeling_llama_mask.py  ./llava/models/modeling_llama_prune.py
+cp ../llava_llama_mask.py  ./llava/model/language_model/llava_llama.py
 ```
 
 
@@ -32,6 +32,12 @@ cp ../llava_llama.py  ./llava/model/language_model/llava_llama.py
    [LLaVA-1.5-7B] (https://huggingface.co/Mickey25/liuwj-7b)
    
    [LLaVA-1.5-13B] (https://huggingface.co/Mickey25/liuwj-13b-new)
+
+2. efficiency evaluation
+```Shell
+cp ../modeling_llama_accel.py  ./llava/models/modeling_llama_prune.py
+cp ../llava_llama_accel.py  ./llava/model/language_model/llava_llama.py
+```
 
 
 ## Train
