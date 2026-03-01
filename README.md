@@ -18,8 +18,6 @@ pip install transformers==4.36.2
 
 2. Copy our updated `modeling_llama_prune.py` and `llava_llama.py` to llava library
 
-TODO
-
 ```Shell
 cp ../modeling_llama_prune.py  ./llava/models/modeling_llama_prune.py
 cp ../llava_llama.py  ./llava/model/language_model/llava_llama.py
