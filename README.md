@@ -32,7 +32,7 @@ cp ../llava_llama_mask.py ./llava/model/language_model/llava_llama.py
 ```
 
 * `modeling_llama_accel.py` and `llava_llama_accel.py` implement practical acceleration and are compatible with flash-attention:
-  * Using only text tokens as the hidden state, while the visual tokens remain unchanged. In a few layers, the visual tokens are used as KV-pairs in the attention block..
+  * Using only text tokens as the hidden state, while the visual tokens remain frozen. In a few layers, the visual tokens are used as KV-pairs in the attention block..
 
 ```bash
 cp ../modeling_llama_accel.py ./llava/models/modeling_llama_prune.py
@@ -50,9 +50,9 @@ cp ../llava_llama_accel.py ./llava/model/language_model/llava_llama.py
    [LLaVA-1.5-13B] (https://huggingface.co/Mickey25/liuwj-13b-new)
 
 2. efficiency evaluation
+TODO
 ```Shell
-cp ../modeling_llama_accel.py  ./llava/models/modeling_llama_prune.py
-cp ../llava_llama_accel.py  ./llava/model/language_model/llava_llama.py
+
 ```
 
 
