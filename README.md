@@ -1,8 +1,74 @@
-# ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention
+<h1 style="text-align: center;">
+ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention
+</h1>
 
-This repository contains the code for the paper : [ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention](https://arxiv.org/abs/2602.07574). 
+<div align="center">
 
-## Install
+[![arXiv](https://img.shields.io/badge/arXiv-2602.07574-b31b1b)](https://arxiv.org/abs/2602.07574)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://opensource.org/licenses/Apache-2.0)
+[![Last Commit](https://img.shields.io/github/last-commit/EIT-NLP/ViCA)](https://github.com/EIT-NLP/ViCA)
+
+</div>
+
+> <strong> ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention </strong>
+>
+> <a href="https://github.com/FakeWoke" rel="nofollow">Wenjie Liu</a><sup>\*,1</sup>, 
+<a href="https://scholar.google.com/citations?hl=zh-CN&user=Ix9RD18AAAAJ" rel="nofollow">Hao Wu</a><sup>\*,1</sup>, 
+Xin Qiu<sup>1</sup>, 
+<a href="https://scholar.google.com/citations?hl=zh-CN&user=FwXKs_YAAAAJ" rel="nofollow">Yingqi Fan</a><sup>1</sup>, 
+Yihan Zhang<sup>1</sup>, 
+<a href="https://anhaozhao-llmer.github.io/" rel="nofollow">Anhao Zhao</a><sup>1</sup>, 
+<a href="https://yunpuma.github.io/" rel="nofollow">Yunpu Ma</a><sup>2</sup>, 
+<a href="https://chin-gyou.github.io/" rel="nofollow">Xiaoyu Shen</a><sup>†,1</sup> 
+>
+> <sup>1</sup>Ningbo Key Laboratory of Spatial Intelligence and Digital Derivative, Institute of Digital Twin, Eastern Institute of Technology, Ningbo
+>
+> <sup>2</sup>LMU Munich
+>
+> <sup>\*</sup> Equal Contribution, <sup>†</sup> Corresponding Author (xyshen@eitech.edu.cn)
+
+
+<p align="center">
+  <img src="assets/vica.png" width="400">
+</p>
+
+If you find ViCA useful for your research and applications, please consider citing:
+
+```bibtex
+@misc{liu2026vicaefficientmultimodalllms,
+    title={ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention}, 
+    author={Wenjie Liu and Hao Wu and Xin Qiu and Yingqi Fan and Yihan Zhang and Anhao Zhao and Yunpu Ma and Xiaoyu Shen},
+    year={2026},
+    eprint={2602.07574},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url={https://arxiv.org/abs/2602.07574}, 
+}
+```
+
+<!-- 🔥 📚 👀 🌟 ✨ ✒️ 🎯 📄 🙏 ✉️ 🤗 🌐 🚀 🔔-->
+
+
+## 🔥News <a id="news"></a>
+
+- **[TODO]** Code, checkpoints, and documentation are being prepared and will be released soon.
+- **[2026.02.07]** The preprint is now published! 
+
+
+## 📚 Contents <a id="contents"></a>
+
+- [News](#news)
+- [Preparation](#preparation)
+- [Usage](#usage)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Contact](#contact)
+
+
+## ✒️ Preparation <a id="preparation"></a>
+
+### Installation
+
 1.  Set up LLavA  https://github.com/haotian-liu/LLaVA 
 ```Shell
 cd LLaVA
@@ -21,7 +87,7 @@ pip install transformers==4.36.2
 
 ---
 
-### 2. Copy updated files to llava library
+**2. Copy updated files to llava library**
 
 * `modeling_llama_mask.py` and `llava_llama_mask.py` implement theoretical pruning:
   * Mask the corresponding attention weight in the attention block of each transformer layer.
@@ -40,29 +106,24 @@ cp ../llava_llama_accel.py ./llava/model/language_model/llava_llama.py
 ```
 
 
-## Inference
-1. Download the checkpoints of pruned LLaVA
+## 
 
-   [LLaVA-1.5-3B] (https://huggingface.co/Mickey25/lwj-3b)
-   
-   [LLaVA-1.5-7B] (https://huggingface.co/Mickey25/liuwj-7b)
-   
-   [LLaVA-1.5-13B] (https://huggingface.co/Mickey25/liuwj-13b-new)
+## 🎯 Usage <a id="usage"></a>
 
-2. efficiency evaluation
+### Inference
+1. Download the checkpoints from our [Model Zoo](docs/MODEL_ZOO.md).
+2. efficiency evaluation.
 TODO
-```Shell
-
-```
 
 
-## Train
-### Training Data
+### Train
+
+####  Training Data
 For our experiments, we primarily use the **LLaVA-1.5** training dataset, which can be prepared following the [official guidelines](https://github.com/haotian-liu/LLaVA#train). 
 
-### Models Used
+#### Models Used
 
-### Training Recipe
+#### Training Recipe
 
 Our training approach consists of two stages: **pretraining** and **fine-tuning**. The training process is configured via the following shell script:
 
@@ -73,10 +134,28 @@ Our training approach consists of two stages: **pretraining** and **fine-tuning*
 
 
 
-## Contact
+## 📄 License <a id="license"></a>
 
-If you have any questions about this project, or would like to discuss related topics, feel free to reach out via email:
-
-- **Wenjie Liu**: [wenjay_leo@outlook.com](mailto:wenjay_leo@outlook.com)  
+This project is released under the [Apache 2.0 license](https://opensource.org/licenses/Apache-2.0).
 
 
+## 🙏 Acknowledgments <a id="acknowledgments"></a>
+
+- Thanks for the [LLaVA](https://github.com/haotian-liu/LLaVA) library, which helps us to quickly implement our ideas.
+
+## ✉️ Contact <a id="contact"></a>
+
+For questions, suggestions, or collaboration opportunities, please feel free to reach out:
+
+- **Wenjie Liu**: wenjay_leo@outlook.com
+- **Hao Wu**: haowu.ai.research@gmail.com
+- **Xiaoyu Shen**: xyshen@eitech.edu.cn
+
+## 🌐 Related Projects <a id="projects"></a>
+- Survey
+  - [From Data to Model: A Survey of the Compression Lifecycle in MLLMs](https://github.com/EIT-NLP/Awesome-MLLM-Compression)
+- Vision Encoder
+  - [UTPTrack: Towards Simple and Unified Token Pruning for Visual Tracking](https://github.com/EIT-NLP/UTPTrack)
+- MLLM
+  - [VisiPruner: Decoding Discontinuous Cross-Modal Dynamics for Efficient Multimodal LLMs](https://github.com/EIT-NLP/VisiPruner)
+  - [HiDrop: Hierarchical Vision Token Reduction in MLLMs via Late Injection, Concave Pyramid Pruning, and Early Exit](https://github.com/EIT-NLP/HiDrop)
