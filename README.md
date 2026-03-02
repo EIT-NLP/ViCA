@@ -47,7 +47,7 @@ If you find ViCA useful for your research and applications, please consider citi
 }
 ```
 
-<!-- 🔥 📚 👀 🌟 ✨ ✒️ 🎯 📄 🙏 ✉️ 🤗 🌐 🚀 🔔-->
+<!-- 🔥 📚 👀 🌟 ✨ ✒️ 🎯 📄 🙏 ✉️ 🤗 🌐 🚀 🔔 💡 🔧 ⭐️ -->
 
 
 ## 🔥News <a id="news"></a>
@@ -55,10 +55,20 @@ If you find ViCA useful for your research and applications, please consider citi
 - **[TODO]** Code, checkpoints, and documentation are being prepared and will be released soon.
 - **[2026.02.07]** The preprint is now published! 
 
+## 💡 Highlights <a id="highlights"></a>
+- xxxxxxxxx
+
+## 🔧 TODO <a id="todo"></a>
+- [x] xxxxxxxxx
+- [ ] xxxxxxxxx
+- [ ] xxxxxxxxx
+- [ ] xxxxxxxxx
 
 ## 📚 Contents <a id="contents"></a>
 
 - [News](#news)
+- [Highlights](#highlights)
+- [TODO](#todo)
 - [Preparation](#preparation)
 - [Usage](#usage)
 - [License](#license)
