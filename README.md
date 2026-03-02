@@ -142,7 +142,7 @@ This project is released under the [Apache 2.0 license](https://opensource.org/l
 
 ## 🙏 Acknowledgments <a id="acknowledgments"></a>
 
-- Thanks for the [LLaVA](https://github.com/haotian-liu/LLaVA) library, which helps us to quickly implement our ideas.
+- Thanks for the [LLaVA](https://github.com/haotian-liu/LLaVA), [FastV](https://github.com/pkunlp-icler/FastV), and [PyramidDrop](https://github.com/Cooperx521/PyramidDrop) library, which helps us to quickly implement our ideas.
 
 ## ✉️ Contact <a id="contact"></a>
 
