@@ -1,5 +1,6 @@
 <h1 align="center">
-ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention
+<span>ViCA: Efficient Multimodal LLMs</span><br>
+<span>with Vision-Only Cross-Attention</span>
 </h1>
 
 <div align="center">
