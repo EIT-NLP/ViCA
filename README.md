@@ -76,6 +76,7 @@ If you find ViCA useful for your research and applications, please consider citi
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 - [Contact](#contact)
+- [Related Projects](#projects)
 
 
 ## ✒️ Preparation <a id="preparation"></a>
