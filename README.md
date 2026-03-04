@@ -62,7 +62,7 @@ If you find ViCA useful for your research and applications, please consider citi
 - ViCA Architecture: Introduces Vision-only Cross-Attention (ViCA), a minimal MLLM design where visual tokens bypass all self-attention and feed-forward layers, interacting with text solely via sparse cross-attention at key layers for efficient multimodal fusion.
 - Superior Performance-Efficiency Trade-off: Maintains approximately 98% of baseline accuracy across three MLLM backbone models and nine multimodal benchmarks, while reducing visual-side computation to about 4% of the original, significantly outperforming 26 existing pruning methods in performance-efficiency trade-offs.
 - Hardware-Friendly Acceleration: Achieves >3.5× speedup in single-batch inference and >10× speedup in multi-batch inference, compatible with FlashAttention.
-- Orthogonal to Pruning Methods: Compatible with token pruning methods for further gains, e.g., combining with PDrop in training-free inference reduces visual computation to 2% with over 96% performance retention.
+- Orthogonal to Token Pruning: Compatible with token pruning methods for further gains, e.g., combining with PDrop in training-free inference reduces visual computation to 2% with over 96% performance retention.
 
 ## 🔧 TODO <a id="todo"></a>
 - [x] xxxxxxxxx
