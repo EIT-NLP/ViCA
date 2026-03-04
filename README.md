@@ -145,7 +145,7 @@ For our experiments, we primarily use the **LLaVA-1.5** training dataset, which 
 
 #### Models Used
 
-We provide support for three model scales for llava-1.5:
+We provide support for three model scales for LLaVA-1.5:
 - [MobileLLaMA-2.7B](https://huggingface.co/mtgv/MobileLLaMA-2.7B-Base)
 - [Vicuna-7B-v1.5](https://huggingface.co/lmsys/vicuna-7b-v1.5)
 - [Vicuna-13B-v1.5](https://huggingface.co/lmsys/vicuna-13b-v1.5)
