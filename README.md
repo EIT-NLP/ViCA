@@ -127,7 +127,9 @@ cp ../llava_llama_accel.py ./llava/model/language_model/llava_llama.py
 ### Inference
 1. Download the checkpoints from our [Model Zoo](docs/MODEL_ZOO.md).
 2. efficiency evaluation.
-TODO
+```bash
+T2V_LAYERS="[0,1,7,8,9,10,11,14]" bash scripts/v1_5/eval/mme.sh
+```
 
 
 ### Train
