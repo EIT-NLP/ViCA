@@ -140,7 +140,10 @@ For our experiments, we primarily use the **LLaVA-1.5** training dataset, which 
 #### Training Recipe
 
 Our training approach consists of two stages: **pretraining** and **fine-tuning**. The training process is configured via the following shell script:
-
+```bash
+T2V_LAYERS="[0,1,7,8,9,10,11,14]" bash scripts/v1_5/pretrain.sh
+T2V_LAYERS="[0,1,7,8,9,10,11,14]" bash scripts/v1_5/finetune.sh
+```
 
 - `T2V_LAYERS`: Controls which transformer layers in the LLM apply text-vision cross-attention. 
   Only the specified layers perform cross-attention between text and visual tokens; 
