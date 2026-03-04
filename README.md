@@ -149,11 +149,11 @@ T2V_LAYERS="[0,1,7,8,9,10,11,14]" bash scripts/v1_5/finetune.sh
   Only the specified layers perform cross-attention between text and visual tokens; 
   all remaining layers process only text tokens.
 
-Preserved text-to-vision cross-attention layers for each backbone:
+Preserved text-to-vision cross-attention layers (used in the official LLaVA-1.5 training recipe and our reproduced experiments):
 \begin{itemize}
-    \item \textbf{LLaVA-1.5-3B}: \(\{0, 1, 14, 15, 18, 19, 21, 22, 23\}\).
-    \item \textbf{LLaVA-1.5-7B}: \(\{0, 1, 7, 8, 9, 10, 11, 14\}\).
-    \item \textbf{LLaVA-1.5-13B}: \(\{0, 6, 8, 9, 10, 13, 14, 16\}\).
+    \item \textbf{LLaVA-1.5-3B}: \{0, 1, 14, 15, 18, 19, 21, 22, 23\}
+    \item \textbf{LLaVA-1.5-7B}: \{0, 1, 7, 8, 9, 10, 11, 14\}
+    \item \textbf{LLaVA-1.5-13B}: \{0, 6, 8, 9, 10, 13, 14, 16\}
 \end{itemize}
 
 ## 📄 License <a id="license"></a>
