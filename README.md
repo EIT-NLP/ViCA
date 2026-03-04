@@ -143,8 +143,8 @@ Our training approach consists of two stages: **pretraining** and **fine-tuning*
 
 
 - `T2V_LAYERS`: Controls which transformer layers in the LLM apply text-vision cross-attention. 
-  Only the specified layers perform cross-modal interaction between text and visual tokens; 
-  all remaining layers function as standard self-attention layers.
+  Only the specified layers perform cross-attention between text and visual tokens; 
+  all remaining layers process only text tokens.
 
 
 
