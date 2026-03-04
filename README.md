@@ -132,9 +132,20 @@ cp ../llava_llama_accel.py ./llava/model/language_model/llava_llama.py
 
 ### Inference
 1. Download the checkpoints from our [Model Zoo](docs/MODEL_ZOO.md).
-2. efficiency evaluation.
+2. We evaluate our model on the following **9 widely-used multimodal benchmarks** to provide a comprehensive assessment across perception, reasoning, hallucination, and specialized capabilities:
+- MME
+- GQA
+- MMBench
+- MMBench_CN
+- POPE
+- SEED-I (image subset of SEED-Bench)
+- SQA-I (image subset of ScienceQA)
+- TextVQA
+- VQAv2
 ```bash
 T2V_LAYERS="[0,1,7,8,9,10,11,14]" bash scripts/v1_5/eval/mme.sh
+……
+T2V_LAYERS="[0,1,7,8,9,10,11,14]" bash scripts/v1_5/eval/textvqa.sh
 ```
 
 
