@@ -100,10 +100,6 @@ pip install transformers==4.36.2
 ```   
 
 
-2. Copy our updated `modeling_llama.py` and `llava_llama.py` to llava library
-当然，下面是更加简洁的版本：
-
----
 
 **2. Copy updated files to llava library**
 
