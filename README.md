@@ -16,9 +16,9 @@
 > <strong> ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention </strong>
 >
 > <a href="https://github.com/FakeWoke" rel="nofollow">Wenjie Liu</a><sup>\*,1</sup>, 
-<a href="https://scholar.google.com/citations?hl=zh-CN&user=Ix9RD18AAAAJ" rel="nofollow">Hao Wu</a><sup>\*,1</sup>, 
+<a href="https://scholar.google.com/citations?user=Ix9RD18AAAAJ" rel="nofollow">Hao Wu</a><sup>\*,1</sup>, 
 Xin Qiu<sup>1</sup>, 
-<a href="https://scholar.google.com/citations?hl=zh-CN&user=FwXKs_YAAAAJ" rel="nofollow">Yingqi Fan</a><sup>1</sup>, 
+<a href="https://scholar.google.com/citations?user=FwXKs_YAAAAJ" rel="nofollow">Yingqi Fan</a><sup>1</sup>, 
 Yihan Zhang<sup>1</sup>, 
 <a href="https://anhaozhao-llmer.github.io/" rel="nofollow">Anhao Zhao</a><sup>1</sup>, 
 <a href="https://yunpuma.github.io/" rel="nofollow">Yunpu Ma</a><sup>2</sup>, 
@@ -35,7 +35,7 @@ Yihan Zhang<sup>1</sup>,
   <img src="assets/vica.png" width="400">
 </p>
 
-If you find ViCA useful for your research and applications, please consider citing:
+If you find this work useful for your research and applications, please consider citing:
 
 ```bibtex
 @misc{liu2026vicaefficientmultimodalllms,
@@ -66,27 +66,16 @@ If you find ViCA useful for your research and applications, please consider citi
 
 
 
-
-
-
-
-## 🔧 TODO <a id="todo"></a>
-- [x] xxxxxxxxx
-- [ ] xxxxxxxxx
-- [ ] xxxxxxxxx
-- [ ] xxxxxxxxx
-
 ## 📚 Contents <a id="contents"></a>
 
-- [News](#news)
-- [Highlights](#highlights)
-- [TODO](#todo)
-- [Preparation](#preparation)
-- [Usage](#usage)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Contact](#contact)
-- [Related Projects](#projects)
+- [News](#news): Latest updates, news, and announcements.
+- [Highlights](#highlights): Core insights and key features highlighted in this work.
+- [Preparation](#preparation): Environment setup and required dependencies.
+- [Usage](#usage): Instructions on how to run and use the code.
+- [License](#license): License information for this repository.
+- [Acknowledgments](#acknowledgments): Credits to projects and contributors that inspired or supported this work.
+- [Contact](#contact): Contact information for questions, feedback, or collaboration.
+- [Related Projects](#projects): Research projects from our group ([EIT-NLP](https://idt.eitech.edu.cn/nlp/)) related to MLLM compression.
 
 
 ## ✒️ Preparation <a id="preparation"></a>
@@ -126,7 +115,6 @@ cp ../llava_llama_accel.py ./llava/model/language_model/llava_llama.py
 ```
 
 
-## 
 
 ## 🎯 Usage <a id="usage"></a>
 
@@ -199,7 +187,7 @@ For questions, suggestions, or collaboration opportunities, please feel free to 
 - **Hao Wu**: haowu.ai.research@gmail.com
 - **Xiaoyu Shen**: xyshen@eitech.edu.cn
 
-## 🌐 Related Projects <a id="projects"></a>
+## 🌐 Related Projects (ours) <a id="projects"></a>
 - Survey
   - [From Data to Model: A Survey of the Compression Lifecycle in MLLMs](https://github.com/EIT-NLP/Awesome-MLLM-Compression)
 - Vision Encoder
