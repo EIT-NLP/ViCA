@@ -83,7 +83,7 @@ ALL_LAYERNORM_LAYERS.append(LlamaRMSNorm)
 
 
 
-def apply_rotary_pos_emb_custom(q, k, cos, sin, text_position_ids, sys_text_position_ids, unsqueeze_dim=1):
+def apply_rotary_pos_emb_custom(q, k, cos, sin, text_position_ids, sys_text_position_ids, layer_idx, use_flash_attn, unsqueeze_dim=1):
     """Applies Rotary Position Embedding to the query and key tensors.
         text-vision cross-attention layer 中 query和 key 因为不同的shape，使用不同的 position_ids
     Args:
@@ -104,8 +104,8 @@ def apply_rotary_pos_emb_custom(q, k, cos, sin, text_position_ids, sys_text_posi
     Returns:
         `tuple(torch.Tensor)` comprising of the query and key tensors rotated using the Rotary Position Embedding.
     """
-    if q.size(3)==128: #7b
-        if k.size(2) == cos.size(0) :  # prefill 的 t2vlayer：key包含视觉token
+    if q.size(3)*q.size(1)==4096 or (use_flash_attn and (( q.size(3)*q.size(1)==5120 and layer_idx>8) or ( q.size(3)*q.size(1)==2560 and layer_idx>5))): #7b； flash-attn中 2.7b 13b的第四层开始query不使用system token，和7b的形式一样了
+        if k.size(2) == cos.size(0) :  #7b的 prefill 的 t2vlayer：key包含视觉token；
             # prefill stage的 t2v layer： query length = text token length ；key length = sys_text tokens length+576
             q_cos = cos[text_position_ids].unsqueeze(unsqueeze_dim)
             q_sin = sin[text_position_ids].unsqueeze(unsqueeze_dim)
@@ -125,7 +125,7 @@ def apply_rotary_pos_emb_custom(q, k, cos, sin, text_position_ids, sys_text_posi
             k_sin = sin[sys_text_position_ids].unsqueeze(unsqueeze_dim)
             q_embed = (q * q_cos) + (rotate_half(q) * q_sin)
             k_embed = (k * k_cos) + (rotate_half(k) * k_sin)
-    else:# 2.7b 13b
+    else:# 2.7b 13b 的前三层 query 包括 system 和 text token
         if k.size(2) == cos.size(0) :  # prefill 的 t2vlayer：key包含视觉token
             #  2.7b 13b 的 prefill stage的 t2v layer： query length = sys_text token length ；key length = sys_text tokens length+576
             q_cos = cos[sys_text_position_ids].unsqueeze(unsqueeze_dim)
@@ -139,6 +139,7 @@ def apply_rotary_pos_emb_custom(q, k, cos, sin, text_position_ids, sys_text_posi
             sin = sin[sys_text_position_ids].unsqueeze(unsqueeze_dim)
             q_embed = (q * cos) + (rotate_half(q) * sin)
             k_embed = (k * cos) + (rotate_half(k) * sin)
+        
 
     return q_embed, k_embed
 
@@ -149,14 +150,7 @@ class LlamaAttention(nn.Module):
     def __init__(self, config: LlamaConfig, layer_idx: Optional[int] = None):
         super().__init__()
         self.config = config
-        # 在 LlamaAttention 类中
-        #prune_heads_env = json.loads(os.environ.get('PRUNE_HEADS_IN_LAYERS', '{}'))
-        #self.prune_heads_in_layers = {int(k): v for k, v in prune_heads_env.items()} if prune_heads_env else {}
-        #self.cross_atten_layers = json.loads(os.environ.get('CROSS_ATTEN_LAYERS', '[]'))  # [] 内也可以手动指定参数
-        #self.prune_mha_layers = json.loads(os.environ.get('PRUNE_MHA_LAYERS', '[]'))  # [] 内也可以手动指定参数
-        #self.prune_mha_vision = json.loads(os.environ.get('PRUNE_MHA_VISION', '[]')) 
         self.t2v_layers = json.loads(os.environ.get('T2V_LAYERS', '[]')) 
-
         self.layer_idx = layer_idx
         
         if layer_idx is None:
@@ -234,13 +228,13 @@ class LlamaAttention(nn.Module):
                 "Passing `padding_mask` is deprecated and will be removed in v4.37. Please make sure use `attention_mask` instead.`"
             )
 
-        if hidden_states.size(1)!=1 and (hidden_states.size(2)==4096):
-            # 7b prefill stage :query只使用 text token,  7b的 channel 是4096
-            bsz, q_len, _ = hidden_states[:,self.vision_token_pos:,:].size() 
-            query_states = self.q_proj(hidden_states[:,self.vision_token_pos:,:])  
-        else:# 有两种可能：1 decoder stage； 2 2.7b 13B模型使用 system text tokens作为query
-            bsz, q_len, _ = hidden_states.size()
-            query_states = self.q_proj(hidden_states)  # decoder阶段的query使用全部token，即 一个text token
+        # if hidden_states.size(1)!=1 and (hidden_states.size(2)==4096):
+        #     # 7b prefill stage :query只使用 text token,  7b的 channel 是4096
+        #     bsz, q_len, _ = hidden_states[:,self.vision_token_pos:,:].size() 
+        #     query_states = self.q_proj(hidden_states[:,self.vision_token_pos:,:])  
+        # else:# 有两种可能：1 decoder stage； 2 2.7b 13B模型使用 system text tokens作为query
+        #     bsz, q_len, _ = hidden_states.size()
+        #     query_states = self.q_proj(hidden_states)  # decoder阶段的query使用全部token，即 一个text token
 
         if self.config.pretraining_tp > 1:
             key_value_slicing = (self.num_key_value_heads * self.head_dim) // self.config.pretraining_tp
@@ -297,7 +291,7 @@ class LlamaAttention(nn.Module):
             cos_sin_length = kv_seq_len + 576
         cos, sin = self.rotary_emb(value_states, seq_len=cos_sin_length)
         
-        query_states, key_states = apply_rotary_pos_emb_custom(query_states, key_states, cos, sin, position_ids, self.sys_text_position_ids)
+        query_states, key_states = apply_rotary_pos_emb_custom(query_states, key_states, cos, sin, position_ids, self.sys_text_position_ids, self.layer_idx, use_flash_attn= False)
 
         if past_key_value is not None:
             cache_kwargs = {"sin": sin, "cos": cos}  # Specific to RoPE models
@@ -331,8 +325,8 @@ class LlamaAttention(nn.Module):
 
         attn_weights = nn.functional.dropout(attn_weights, p=self.attention_dropout, training=self.training)
 
-        if self.layer_idx not in [0,1,2,3,4,5] and attn_weights.size(2)!=1 and self.vision_exists:
-            attn_weights[:,:,:,:35] = 0  # prefill stage 将sys-sys attention mask
+        # if self.layer_idx not in [0,1,2,3,4,5] and attn_weights.size(2)!=1 and self.vision_exists:
+        #     attn_weights[:,:,:,:35] = 0  # prefill stage 将sys-sys attention mask
         attn_output = torch.matmul(attn_weights, value_states)
 
         if attn_output.size() != (bsz, self.num_heads, q_len, self.head_dim):
@@ -395,8 +389,8 @@ class LlamaFlashAttention2(LlamaAttention):
 
         output_attentions = False
             # hidden_state有system和text tokens, 
-        if hidden_states.size(1)!=1 and (hidden_states.size(2)==4096):
-            # 7b prefill stage :query只使用 text token,  7b的 channel 是4096
+        if hidden_states.size(1)!=1 and (hidden_states.size(2)==4096  or ( hidden_states.size(2) == 5120 and self.layer_idx>8) or ( hidden_states.size(2) == 2560 and self.layer_idx>5)):
+            # 7b prefill stage :query只使用 text token; 2.7b的第5层开始 13b第5层开始 不在注意力中更新system token
             bsz, q_len, _ = hidden_states[:,self.vision_token_pos:,:].size() 
             query_states = self.q_proj(hidden_states[:,self.vision_token_pos:,:])  
         else:# 有两种可能：1 decoder stage； 2 2.7b 13B模型使用 system text tokens作为query
@@ -434,17 +428,7 @@ class LlamaFlashAttention2(LlamaAttention):
             cos_sin_length = kv_seq_len + 576
         cos, sin = self.rotary_emb(value_states, seq_len=cos_sin_length)
 
-        query_states, key_states = apply_rotary_pos_emb_custom(query_states, key_states, cos, sin, position_ids, self.sys_text_position_ids)
-        # query_states = apply_rotary_pos_emb_custom(query_states, cos, sin, position_ids)
-        # if self.layer_idx in self.t2v_layers and self.vision_exists: # 仅在text-vision layers 使用 全部的pos-ids及其位置编码
-        #     key_states = apply_rotary_pos_emb_custom(key_states, cos, sin, self.all_position_ids)
-        # else: # 其余层仅使用 system 和text token的 position_ids及其位置编码
-        #     key_states = apply_rotary_pos_emb_custom(key_states, cos, sin, self.sys_text_position_ids)
-        # if hidden_states.size(1) == 1:
-        #     end_event.record()
-        #     torch.cuda.synchronize()
-        #     latency_ms = start_event.elapsed_time(end_event)
-        #     print(f"Layer {self.layer_idx} attention latency: {latency_ms} ms")
+        query_states, key_states = apply_rotary_pos_emb_custom(query_states, key_states, cos, sin, position_ids, self.sys_text_position_ids, self.layer_idx, use_flash_attn= True)
         
         if past_key_value is not None:
             cache_kwargs = {"sin": sin, "cos": cos}  # Specific to RoPE models
@@ -484,11 +468,19 @@ class LlamaFlashAttention2(LlamaAttention):
             query_states = query_states.to(target_dtype)
             key_states = key_states.to(target_dtype)
             value_states = value_states.to(target_dtype)
-        
-        attn_output = self._flash_attention_forward(
-            query_states, key_states, value_states, attention_mask, q_len, dropout=dropout_rate
-        )
 
+        if hidden_states.size(1)==1 or hidden_states.size(2)==4096 or self.layer_idx >5: # 7b的prefill+decode; 2.7b 13b的decode stage; 2.7b 13b的prefill stage的 后面34层
+            attn_output = self._flash_attention_forward(
+                query_states, key_states, value_states, attention_mask, q_len, dropout=dropout_rate
+            )
+        else: # 2.7b 13b的prefill stage的 前6层 需要更新system token（query含有system）
+            attn_output_sys = self._flash_attention_forward(
+                query_states[:,:self.vision_token_pos,:,:], key_states[:,:self.vision_token_pos,:,:], value_states[:,:self.vision_token_pos,:,:], attention_mask, q_len, dropout=dropout_rate
+            )
+            attn_output_text = self._flash_attention_forward(
+                query_states[:,self.vision_token_pos:,:,:], key_states, value_states, attention_mask, q_len, dropout=dropout_rate
+            )
+            attn_output = torch.cat([attn_output_sys, attn_output_text], dim=1)
         attn_output = attn_output.reshape(bsz, q_len, self.hidden_size).contiguous()
         attn_output = self.o_proj(attn_output)
 
@@ -702,7 +694,7 @@ class LlamaDecoderLayer(nn.Module):
         self.input_layernorm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
         self.post_attention_layernorm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
         self.t2v_layers = json.loads(os.environ.get('T2V_LAYERS', '[]')) 
-        #self.metrics_layer= {} 
+        self.metrics_layer= {} 
 
     def forward(
         self,
@@ -733,8 +725,6 @@ class LlamaDecoderLayer(nn.Module):
             warnings.warn(
                 "Passing `padding_mask` is deprecated and will be removed in v4.37. Please make sure use `attention_mask` instead.`"
             )
-        
-
 
         
         residual = hidden_states
@@ -756,10 +746,12 @@ class LlamaDecoderLayer(nn.Module):
             use_cache=use_cache,
             **kwargs,
         )
-        if hidden_states.size(1) != 1 and self.vision_exists and (hidden_states.size(2) == 4096) : # 7b query只使用 text token, output也只更新 text token部分
+        # 7b query不使用system token，2.7b 13b的flash-attention第七层开始不使用system token， 其他情况使用system token
+        if hidden_states.size(1) != 1 and self.vision_exists and (hidden_states.size(2) == 4096 or (self.self_attn.config._attn_implementation == "flash_attention_2" and (( hidden_states.size(2) == 5120 and self.layer_idx>8) or ( hidden_states.size(2) == 2560 and self.layer_idx>5)))) : 
+            # 7b query只使用 text token, 2.7b 第8层开始 13b第四层开始  也是这样
             residual[:,self.vision_token_pos:,:] = residual[:,self.vision_token_pos:,:] + hidden_states_update
             hidden_states = residual
-        else: # 分两种情况：1 decoder阶段；  2 2.7b 13B模型使用 system text tokens作为query
+        else: # 分两种情况：1 decoder阶段；  2 2.7b 前8层、 13B前6层使用 system text tokens作为query
             hidden_states = residual + hidden_states_update
 
 
@@ -919,7 +911,8 @@ class LlamaModel_prune(LlamaPreTrainedModel):
         self.norm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
 
         self.gradient_checkpointing = False
-
+        # # 初始化相似度保存
+        # self.metrics = []
         
         # Initialize weights and apply final processing
         self.post_init()
@@ -1019,8 +1012,12 @@ class LlamaModel_prune(LlamaPreTrainedModel):
         if attention_mask is not None: # eager模式的attn mask
             new_seq_len = hidden_states.size(1) 
             if hidden_states.size(2) == 4096: #7b模型 query是 text tokens
-                vision_attention_mask = attention_mask[:, :, self.vision_token_pos+576:, :] # text to sys-vis-text attn-mask
-                attention_mask = attention_mask[:, :, self.vision_token_pos:new_seq_len, :new_seq_len] # text to sys-text attn-mask
+                if hidden_states.size(1) != 1:
+                    vision_attention_mask = attention_mask[:, :, self.vision_token_pos+576:, :] # text to sys-vis-text attn-mask
+                    attention_mask = attention_mask[:, :, self.vision_token_pos:new_seq_len, :new_seq_len] # text to sys-text attn-mask
+                else:
+                    vision_attention_mask = attention_mask[:, :, :, :] # text to sys-vis-text attn-mask
+                    attention_mask = attention_mask[:, :, : , :attention_mask.size(3)-576] # text to sys-text attn-mask
             else: # 2.7b  13b  query是 sys+text
                 vision_attention_mask = torch.cat([attention_mask[:, :, :self.vision_token_pos, :], attention_mask[:, :, self.vision_token_pos+576:, :]], dim=2) # sys-text to sys-vis-text attn-mask
                 if hidden_states.size(1) == 1:
@@ -1068,7 +1065,8 @@ class LlamaModel_prune(LlamaPreTrainedModel):
                     output_attentions=output_attentions,
                     use_cache=use_cache,
                 )
-
+            # # 推理结束后，如果需要，保存相似度指标
+            # self.metrics.append(decoder_layer.metrics_layer)
             
             hidden_states = layer_outputs[0]
             
@@ -1078,6 +1076,16 @@ class LlamaModel_prune(LlamaPreTrainedModel):
             if output_attentions:
                 all_self_attns += (layer_outputs[1],)
         
+        # if hidden_states.size(1) != 1 : # 只在prefill阶段保存指标
+        #     #在LlamaModel_prune的forward方法中，修改保存代码    
+        #     os.makedirs('metrics-s2s-textvqa', exist_ok=True)
+        #     sample_id = f"sample_{len(os.listdir('metrics-s2s-textvqa'))}"
+        #     filepath = os.path.join('metrics-s2s-textvqa', f"{sample_id}.pkl")
+        #     # 使用pickle保存
+        #     with open(filepath, 'wb') as f:
+        #         pickle.dump(self.metrics, f)
+        #     # 重置指标列表
+        #     self.metrics = []
         
         hidden_states = self.norm(hidden_states)
         

@@ -98,7 +98,7 @@ pip install transformers==4.36.2
 
 **2. Copy updated files to llava library**
 
-* `modeling_llama_mask.py` and `llava_llama_mask.py` implement theoretical pruning:
+* `modeling_llama_mask.py` and `llava_llama_mask.py` implement theoretical pruning in `eager-attention`:
   * Mask the corresponding attention weight in the attention block of each transformer layer.
   * In FFN, extract text tokens from hidden states, feed them through FFN, and concatenate with visual tokens.
 ```bash
@@ -106,7 +106,7 @@ cp ../modeling_llama_mask.py ./llava/models/modeling_llama_prune.py
 cp ../llava_llama_mask.py ./llava/model/language_model/llava_llama.py
 ```
 
-* `modeling_llama_accel.py` and `llava_llama_accel.py` implement practical acceleration and are compatible with flash-attention:
+* `modeling_llama_accel.py` and `llava_llama_accel.py` implement practical acceleration in `eager-attention` and `flash-attention`:
   * Using only text tokens as the hidden state, while the visual tokens remain frozen. In a few layers, the visual tokens are used as KV-pairs in the attention block..
 
 ```bash
@@ -163,6 +163,8 @@ T2V_LAYERS="[0,1,7,8,9,10,11,14]" bash scripts/v1_5/finetune.sh
 - `T2V_LAYERS`: Controls which transformer layers in the LLM apply text-vision cross-attention. 
   Only the specified layers perform cross-attention between text and visual tokens; 
   all remaining layers process only text tokens.
+
+We train model variants in the implementation versions of the theoretical pruning of ` modeling.lama_mask. py ` and ` llava_1lama_mask. py `
 
 Preserved text-to-vision cross-attention layers in LLaVA-1.5 models:
 - LLaVA-1.5-3B: \{0, 1, 14, 15, 18, 19, 21, 22, 23\}
