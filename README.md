@@ -16,7 +16,7 @@
 > <strong> ViCA: Efficient Multimodal LLMs with Vision-Only Cross-Attention </strong>
 >
 > <a href="https://github.com/FakeWoke" rel="nofollow">Wenjie Liu</a><sup>\*,1</sup>, 
-<a href="https://scholar.google.com/citations?user=Ix9RD18AAAAJ" rel="nofollow">Hao Wu</a><sup>\*,1</sup>, 
+<a href="https://harrisonwu42.github.io/" rel="nofollow">Hao Wu</a><sup>\*,1</sup>, 
 Xin Qiu<sup>1</sup>, 
 <a href="https://scholar.google.com/citations?user=FwXKs_YAAAAJ" rel="nofollow">Yingqi Fan</a><sup>1</sup>, 
 Yihan Zhang<sup>1</sup>, 
